@@ -1,27 +1,3 @@
-/*
- *
- * d === private key
- *  -Used for decryption
- *
- * e === public key
- *  -Used for encryption
- *
- * p === plaintext
- *
- * c === ciphertext
- *
- *
- * Encryption algorithm
- *  C = P^e mod n
- *
- *
- * Decryption algorithm
- *  P = C^d mod n
- *
- * Encryption and decrytion are inverses of each other, where the plaintext and ciphertext swap places accordingly
- */
-
-
 const findPrimes = (n) => {
   var primes = [];
   var composites = new Set();
@@ -36,24 +12,55 @@ const findPrimes = (n) => {
     }
   }
   return primes;
-}
+};
 
 const psuedoRandom = () => {
     let seed = Date.now() - Math.floor(Math.random() * 1000000000000);
     let x = Math.sin(seed) * 10000;
     return x - Math.floor(x);
-}
+};
 
 const MAX = 100000;
 const PRIMES = findPrimes(MAX);
 
-let randomPrime = () => PRIMES[ Math.floor(psuedoRandom() * PRIMES.length) ];
-
-var p = randomPrime();
-var q = randomPrime();
-
-console.log(p);
-console.log(q);
-
+const greatestCommonDivisor = (a, b) => {
+  if (!b) {
+      return a;
+  }
+  return greatestCommonDivisor(b, a % b);
+};
 
 
+//e must be odd
+//e cannot share a factor with totient
+const findE = (totient, n) => {
+  let i = 1, prime;
+
+  do {
+    prime = PRIMES[ i ];
+    i++;
+  } while(greatestCommonDivisor(prime, totient) !== 1);
+
+  if (prime >= n) {
+    throw new Error('Prime too big');
+  }
+
+  return prime;
+}
+
+const findD = (totient, e) => {
+  let result, d = 0;
+
+  while (result !== 1) {
+    d++;
+    result = (d * e) % totient;
+  }
+
+  return d;
+
+};
+
+//const randomPrime = () => PRIMES[ Math.floor(psuedoRandom() * PRIMES.length) ];
+const randomPrime = () => PRIMES[ ~~(Math.random() * 10) ];
+
+module.exports = { randomPrime, findE, findD };
