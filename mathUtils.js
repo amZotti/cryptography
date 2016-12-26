@@ -125,3 +125,39 @@ function isCoprime(a, b) {
 
   return commonFactors(a,b).length === 0;
 }
+
+/*
+ * areModularInverses() is an alias for isCoprime() since only the numbers coprime to C have modular inverses.
+ *
+ * Numbers that share no prime factors with C have a modular inverse (mod C)
+ *
+ * A modular inverse is, as the name implies, the inverse of the modulo operation.
+ *
+ */
+
+function areModularInverses(a,b) {
+  return isComprime(a,b);
+}
+
+/*
+ * Returns array of all coprimes in range 0 to n
+ */
+
+function getCoprimes(n) {
+  var results = [];
+  for (var i = 0;i < n;i++) {
+    if (isCoprime(i, n)) {
+      results.push(i);
+    }
+  }
+  return results;
+}
+
+function findModularInverse(a,c){
+  for (var b = 0;b < c - 1;b++) {
+    if((a * b) % c === 1) {
+      return b;
+    }
+  }
+  return null;
+}
