@@ -1,38 +1,38 @@
+var bigInteger = require('big-integer');
+
 const utils = require('./utils');
-const randomPrime = utils.randomPrime;
 const findE = utils.findE;
 const findD = utils.findD;
 
-let p = randomPrime();
-let q = randomPrime();
+//used for keygen
+[ p, q ] = utils.randomPrimes();
 
-//let p = 5;
-//let q = 11;
-let m = 20;
+let m = 1543432;
 
+//one way variable
 let n = p * q;
 
-
-console.log('p: ', p);
-console.log('q: ', q);
-//totient === phi of n
+//phi of n
+//Answers question: How many numbers between 1 and n share a factor with n
 let totient = (p-1) * (q-1);
 
+console.log('totient: ', totient);
+console.log('n: ', n);
+
 let e = findE(totient, n);
-let d = findD(totient, e);
+console.log('e: ', e);
+//let d = findD(totient, e);
+let d = bigInteger(e).modInv(totient).value;
+console.log('d:', d);
+
 const encrypt = (e, n, m) => {
-  return Math.pow(m, e) % n;
+  return bigInteger(m).pow(e).mod(n).value;
 };
 
 const decrypt = (d, n, c) => {
-  return Math.pow(c, d) % n;
+  return bigInteger(c).pow(d).mod(n).value;
 };
 
-console.log('totient: ', totient);
-console.log('e: ', e);
-console.log('d: ', d);
-
-console.log('plaintext: ', m);
 
 let encrypted = encrypt(e,n, m);
 

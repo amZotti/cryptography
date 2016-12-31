@@ -1,3 +1,5 @@
+var findModularInverse = require('./mathUtils').findModularInverse;
+
 const findPrimes = (n) => {
   var primes = [];
   var composites = new Set();
@@ -48,19 +50,37 @@ const findE = (totient, n) => {
   return prime;
 }
 
-const findD = (totient, e) => {
-  let result, d = 0;
-
-  while (result !== 1) {
-    d++;
-    result = (d * e) % totient;
+const extendedEuclideanGCD = (dividend, divisor) => {
+  if (divisor == 0) {
+    return {
+      x: 1,
+      y: 0,
+      d: dividend
+    };
   }
 
-  return d;
+  let result = extendedEuclideanGCD(divisor, dividend % divisor);
+  let x = result.x;
+  let y = result.y;
+  let d = result.d;
 
+  return {
+    x: y,
+    y: x-y*Math.floor(dividend/divisor),
+    d: d
+  };
 };
 
-//const randomPrime = () => PRIMES[ Math.floor(psuedoRandom() * PRIMES.length) ];
-const randomPrime = () => PRIMES[ ~~(Math.random() * 10) ];
+const findD = (totient, e) => {
+  let result = extendedEuclideanGCD(totient, e);
+  return totient + result.y;
+};
 
-module.exports = { randomPrime, findE, findD };
+const randomPrimes = () => {
+  let i = ~~(Math.random() * 10);
+  let p = PRIMES[ i ];
+  let q = PRIMES[ i - 1 ];
+  return [ p, q ];
+};
+
+module.exports = { randomPrimes, findE, findD };

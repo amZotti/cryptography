@@ -88,6 +88,29 @@ function findFactors(n) {
   return factors;
 }
 
+function recursiveEuclideanGCD(dividend,divisor) {
+
+  if (divisor === 0) {
+    return dividend;
+  }
+
+  return recursiveEuclideanGCD(divisor, dividend % divisor);
+}
+
+function euclideanGCD(dividend,divisor) {
+  var remainder = Number.POSITIVE_INFINITY;
+
+  while (remainder > 0) {
+    remainder = dividend % divisor;
+    quotient = (dividend / divisor) >>> 0;
+
+    dividend = divisor;
+    divisor = remainder;
+  }
+
+  return dividend;
+}
+
 function commonFactors(a, b) {
   var aFactors = findFactors(a);
   var bFactors = findFactors(b);
@@ -161,3 +184,5 @@ function findModularInverse(a,c){
   }
   return null;
 }
+
+module.exports = { findModularInverse };
