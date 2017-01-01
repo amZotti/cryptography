@@ -1,47 +1,41 @@
+const bigInteger = require('big-integer');
 const utils = require('./utils');
-const randomPrime = utils.randomPrime;
 const findE = utils.findE;
 const findD = utils.findD;
 
-let p = randomPrime();
-let q = randomPrime();
-
-//let p = 5;
-//let q = 11;
-let m = 20;
-
-let n = p * q;
-
-
-console.log('p: ', p);
-console.log('q: ', q);
-//totient === phi of n
-let totient = (p-1) * (q-1);
-
-let e = findE(totient, n);
-let d = findD(totient, e);
 const encrypt = (e, n, m) => {
-  return Math.pow(m, e) % n;
+  return bigInteger(m).pow(e).mod(n).value;
 };
 
 const decrypt = (d, n, c) => {
-  return Math.pow(c, d) % n;
+  return bigInteger(c).pow(d).mod(n).value;
 };
 
-console.log('totient: ', totient);
-console.log('e: ', e);
-console.log('d: ', d);
+const encryptText = (e, n, str) => {
+	return Array.prototype.map.call(str, (char) => encrypt(e, n, char.charCodeAt()));
+};
 
-console.log('plaintext: ', m);
+const decryptText = (d, n, encryptedCharCodes) => {
+	return encryptedCharCodes.reduce((accumulator, encryptedCharCode) => {
+		return accumulator + String.fromCharCode(decrypt(d, n, encryptedCharCode));
+	}, '');
+};
 
-let encrypted = encrypt(e,n, m);
+[ p, q ] = utils.randomPrimes();
+
+let n = p * q;
+let totient = (p-1) * (q-1);
+
+let e = findE(totient, n);
+let d = bigInteger(e).modInv(totient).value;
+
+//m = message that will be encrypted/decrypted
+var m = 'works';
+
+let encrypted = encryptText(e, n, m);
 
 console.log('encrypted: ', encrypted);
 
-let decrypted = decrypt(d,n,encrypted);
+let decrypted = decryptText(d, n, encrypted);
 
 console.log('decrypted: ', decrypted);
-
-
-
-
