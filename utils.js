@@ -1,5 +1,3 @@
-var findModularInverse = require('./mathUtils').findModularInverse;
-
 const findPrimes = (n) => {
   var primes = [];
   var composites = new Set();
@@ -16,12 +14,6 @@ const findPrimes = (n) => {
   return primes;
 };
 
-const psuedoRandom = () => {
-    let seed = Date.now() - Math.floor(Math.random() * 1000000000000);
-    let x = Math.sin(seed) * 10000;
-    return x - Math.floor(x);
-};
-
 const MAX = 100000;
 const PRIMES = findPrimes(MAX);
 
@@ -32,9 +24,6 @@ const greatestCommonDivisor = (a, b) => {
   return greatestCommonDivisor(b, a % b);
 };
 
-
-//e must be odd
-//e cannot share a factor with totient
 const findE = (totient, n) => {
   let i = 1, prime;
 
@@ -77,7 +66,7 @@ const findD = (totient, e) => {
 };
 
 const randomPrimes = () => {
-  let i = ~~(Math.random() * 10);
+  let i = 30 + (Math.random() * 10) >>> 0;
   let p = PRIMES[ i ];
   let q = PRIMES[ i - 1 ];
   return [ p, q ];
